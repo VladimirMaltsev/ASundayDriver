@@ -34,5 +34,11 @@ public class GameManage : MonoBehaviour {
                 Application.Quit();
             }
         }
+
+        if (GUI.Button(new Rect(0, Screen.height - 100, 200, 50), "Restart"))
+        {
+            Application.LoadLevel(index: Application.loadedLevel);
+            
+        }
     }
 }

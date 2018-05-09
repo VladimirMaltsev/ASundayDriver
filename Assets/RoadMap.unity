@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 44258811}
   m_Layer: 0
   m_Name: Road
-  m_TagString: Border
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -485,7 +485,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 50308728d018b944da962bd16df85f81, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.14901961, g: 0.05882353, b: 0.12941177, a: 0.7254902}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -677,9 +677,9 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 40
   m_LinearDrag: 30
-  m_AngularDrag: 17
+  m_AngularDrag: 10
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 7f040a0e7ef71aa4fb8462ef96f7e6a6, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0

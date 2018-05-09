@@ -11,19 +11,20 @@ public class CarControllerGyro : MonoBehaviour {
     public float mouseSensitivityY = 3.5f;
     public bool mbLockNHideCursor = false;
     private float cameraRotationX, cameraRotationY;
-
-    private enum SnapTo { WorldAxis, InitialRotation };
-
+    
     private Gyroscope gyro;
-    private Quaternion phoneRotation;
+    private Quaternion phone_rotation;
     private float acceleration;
-    private float current_angle;
-    private float angleRange = 90;
+    private float current_angle_rotation;
+    private float angle_range = 90;
 
     Rigidbody2D car_body;
     public GameManage gm;
 
     private float score;
+    private float previous_gyro_rotation_z;
+    private float current_gyro_rotation_z;
+    private float inital_phone_rotation_z;
 
     void Awake()
     {
@@ -33,7 +34,9 @@ public class CarControllerGyro : MonoBehaviour {
         gyro.enabled = true;
 
         car_body = GetComponent<Rigidbody2D>();
-        current_angle = 0;
+        inital_phone_rotation_z = GetGyroRotationZ();
+        current_angle_rotation = 0;
+        previous_gyro_rotation_z = 0;
     }
 
     void Start()
@@ -49,11 +52,11 @@ public class CarControllerGyro : MonoBehaviour {
 #if UNITY_EDITOR
         cameraRotationX += UnityEngine.Input.GetAxis("Mouse Y") * mouseSensitivityY;
         cameraRotationY += UnityEngine.Input.GetAxis("Mouse X") * mouseSensitivityX;
-        current_angle = cameraRotationY;
+        current_angle_rotation = cameraRotationY;
 #endif
         
         car_body.AddForce(transform.up * car_speed, ForceMode2D.Impulse);
-        car_body.AddTorque(Mathf.Clamp(current_angle,  -45, 45), ForceMode2D.Impulse);
+        car_body.AddTorque(Mathf.Clamp(current_angle_rotation,  -angle_range/2, angle_range/2), ForceMode2D.Impulse);
 
         UpdateScore();
     }
@@ -61,7 +64,8 @@ public class CarControllerGyro : MonoBehaviour {
     public void UpdateCurrentAngle()
     {
         acceleration = gyro.rotationRate.z;
-        current_angle += acceleration * Time.deltaTime * 360 / Mathf.PI;
+        if (WasRotation())
+            current_angle_rotation += acceleration * Time.deltaTime * 360 / Mathf.PI;
     }
 
     public void UpdateScore()
@@ -84,6 +88,26 @@ public class CarControllerGyro : MonoBehaviour {
             
 }
     }
+
+    public bool WasRotation()
+    {
+        bool was_rotatiton = false;
+        current_gyro_rotation_z = GetGyroRotationZ() - inital_phone_rotation_z;
+        if (current_gyro_rotation_z > 180)
+            current_gyro_rotation_z -= 360;
+
+        if (Mathf.Abs(previous_gyro_rotation_z - current_gyro_rotation_z) > 0.5)
+            was_rotatiton = true;
+
+        previous_gyro_rotation_z = current_gyro_rotation_z;
+
+        return was_rotatiton;
+    }
+
+    public float GetGyroRotationZ()
+    {
+        return (Quaternion.Euler(90f, 0f, 0f) * new Quaternion(gyro.attitude.x, gyro.attitude.y, -gyro.attitude.z, -gyro.attitude.w)).eulerAngles.z;
+    }
    
     void OnGUI()
     {
@@ -94,9 +118,8 @@ public class CarControllerGyro : MonoBehaviour {
         GUI.Label(new Rect(10, 30, 500, 50), "RotationRateX = " + gyro.rotationRate.x, style);
         GUI.Label(new Rect(10, 50, 500, 50), "RotationRateY = " + gyro.rotationRate.y, style);
         GUI.Label(new Rect(10, 70, 500, 50), "RotationRateZ = " + gyro.rotationRate.z, style);
-        GUI.Label(new Rect(10, 100, 500, 50), "Angle = " + current_angle, style);
-        float gyro_rotation = (Quaternion.Euler(90f, 0f, 0f) * new Quaternion(gyro.attitude.x, gyro.attitude.y, -gyro.attitude.z, -gyro.attitude.w)).eulerAngles.z;
-        GUI.Label(new Rect(10, 130, 500, 50), "AngleAttitudeZ = " + gyro_rotation, style);
+        GUI.Label(new Rect(10, 100, 500, 50), "Angle = " + current_angle_rotation, style);
+        GUI.Label(new Rect(10, 130, 500, 50), "AngleAttitudeZ = " + current_gyro_rotation_z, style);
         style.fontSize = 60;
         style.alignment = TextAnchor.MiddleCenter;
         GUI.Label(new Rect(Screen.width / 2.0f  - 125, 100, 250, 50), ""+(Mathf.Ceil(score) -1), style);
