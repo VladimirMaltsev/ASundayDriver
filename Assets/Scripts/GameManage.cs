@@ -20,6 +20,11 @@ public class GameManage : MonoBehaviour {
 
     public static string levelNamep;
 
+    public AudioSource audio;
+    public Button audioButton;
+    public Sprite audioOn;
+    public Sprite audioOff;
+
     void Awake() {
         saveMenuUI.SetActive(false);
         levelMenuUI.SetActive(false);
@@ -94,6 +99,18 @@ public class GameManage : MonoBehaviour {
         scoreText.text = "your score " + (Mathf.Ceil(score) - 1);
     }
 
+    public void AudioButtonListener()
+    {
+        if (audio.mute)
+        {
+            audioButton.GetComponent<Image>().sprite = audioOn;
+        } else
+        {
+            audioButton.GetComponent<Image>().sprite = audioOff;
+        }
+        audio.mute = !audio.mute;
+    }
+
     void OnGUI()
     {
         if (!levelMenuUI.activeSelf)
@@ -101,12 +118,12 @@ public class GameManage : MonoBehaviour {
             GUIStyle style = GUI.skin.label;
             style.fontSize = 30;
             style.alignment = TextAnchor.MiddleLeft;
-
+            /*
             GUI.Label(new Rect(10, 30, 500, 50), "RotationRateX = " + ccg.gyro.rotationRate.x, style);
             GUI.Label(new Rect(10, 60, 500, 50), "RotationRateY = " + ccg.gyro.rotationRate.y, style);
             GUI.Label(new Rect(10, 90, 500, 50), "RotationRateZ = " + ccg.gyro.rotationRate.z, style);
             GUI.Label(new Rect(10, 120, 500, 50), "Angle = " + ccg.current_angle_rotation, style);
-            GUI.Label(new Rect(10, 150, 500, 50), "AngleAttitudeZ = " + ccg.current_gyro_rotation_z, style);
+            GUI.Label(new Rect(10, 150, 500, 50), "AngleAttitudeZ = " + ccg.current_gyro_rotation_z, style);*/
             style.fontSize = 80;
             style.normal.textColor = Color.white;
             style.alignment = TextAnchor.MiddleCenter;
