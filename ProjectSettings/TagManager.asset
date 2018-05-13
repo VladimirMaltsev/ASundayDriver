@@ -48,6 +48,9 @@ TagManager:
   - name: Road
     uniqueID: 2120416721
     locked: 0
+  - name: Elems
+    uniqueID: 2096943335
+    locked: 0
   - name: Car
     uniqueID: 2756757849
     locked: 0
