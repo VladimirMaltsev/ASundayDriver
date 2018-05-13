@@ -5,9 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+    private AsyncOperation async;
+    // Use this for initialization
+    void Start () {
+        async = SceneManager.LoadSceneAsync(1);
+        async.allowSceneActivation = false;
 	}
 
     // Update is called once per frame
@@ -17,6 +19,6 @@ public class MainMenuController : MonoBehaviour {
 
     public void PlayGame()
     {
-        SceneManager.LoadScene(1);
+        async.allowSceneActivation = true;
     }
 }
