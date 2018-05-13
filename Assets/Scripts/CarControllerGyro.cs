@@ -111,15 +111,27 @@ public class CarControllerGyro : MonoBehaviour {
         {
             if (coll.gameObject.tag == "Border" && mayBeDestroyed)
             {
+            mayBeDestroyed = false;
                 ps_BOOOM.Play();
                 if (Vibration.HasVibrator())
                 {
                     Vibration.Vibrate(200);
                 }
-                
-                //current_angle_rotation = 0;
+
+            //current_angle_rotation = 0;
+            if (!wasCrash)
+            {
+                wasCrash = true;
                 gm.saveMenuUI.SetActive(true);
+                StartCoroutine(gm.Timer(3));
                 car_speed = 0;
+            } else
+            {
+                gm.UpdateTextScore();
+                this.GetComponent<SpriteRenderer>().enabled = false;
+                gm.levelMenuUI.SetActive(true);
+                car_speed = 0;
+            }
         }
     }
 
