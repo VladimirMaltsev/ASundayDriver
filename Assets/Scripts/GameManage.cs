@@ -91,9 +91,14 @@ public class GameManage : MonoBehaviour {
 
     public void UpdateTextScore()
     {
+        if (PlayerPrefs.HasKey("bestScore")){
+            bestScore = PlayerPrefs.GetFloat("bestScore");
+        }
         if (score > bestScore)
         {
             bestScore = score;
+            PlayerPrefs.SetFloat("bestScore", bestScore);
+            PlayerPrefs.Save();
         }
         scoreBestText.text = "best score " + (Mathf.Ceil(bestScore) - 1);
         scoreText.text = "your score " + (Mathf.Ceil(score) - 1);

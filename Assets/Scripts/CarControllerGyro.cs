@@ -135,6 +135,25 @@ public class CarControllerGyro : MonoBehaviour {
         }
     }
 
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.tag == "Puddle")
+        {
+            Vibration.Vibrate(200);
+            car_speed = 200f;
+            car_body.angularDrag = 30;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D coll)
+    {
+        if (coll.tag == "Puddle")
+        {
+            car_speed = 400f;
+            car_body.angularDrag = 12;
+        }
+    }
+
     public void ActivateProtection()
     {
         mayBeDestroyed = false;
