@@ -7,6 +7,9 @@ TagManager:
   - Border
   - Puddle
   - Car
+  - CarCollider
+  - RightButton
+  - LeftButton
   layers:
   - Default
   - TransparentFX
@@ -23,9 +26,9 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - LightSource
+  - AmbientLight
+  - LightObtacles
   - 
   - 
   - 

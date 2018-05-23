@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Advertisements;
 
 public class GameManage : MonoBehaviour {
 
@@ -17,10 +18,9 @@ public class GameManage : MonoBehaviour {
 
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI scoreBestText;
+    
 
-    public static string levelNamep;
-
-    public AudioSource audio;
+    public AudioSource audioManager;
     public Button audioButton;
     public Sprite audioOn;
     public Sprite audioOff;
@@ -44,6 +44,13 @@ public class GameManage : MonoBehaviour {
         score += 0.1f;
     }
 
+
+    public void ShowAds()
+    {
+        Advertisement.Show();
+        System.Threading.Thread.Sleep(2000);
+        ccg.ActivateProtection();
+    }
 
     public IEnumerator Timer(float seconds)
     {
@@ -106,14 +113,14 @@ public class GameManage : MonoBehaviour {
 
     public void AudioButtonListener()
     {
-        if (audio.mute)
+        if (audioManager.mute)
         {
             audioButton.GetComponent<Image>().sprite = audioOn;
         } else
         {
             audioButton.GetComponent<Image>().sprite = audioOff;
         }
-        audio.mute = !audio.mute;
+        audioManager.mute = !audioManager.mute;
     }
 
     void OnGUI()
