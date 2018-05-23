@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 public class CarControllerGyro : MonoBehaviour {
 
@@ -11,33 +12,47 @@ public class CarControllerGyro : MonoBehaviour {
     public float mouseSensitivityY = 3.5f;
     public bool mbLockNHideCursor = false;
     private float cameraRotationX, cameraRotationY;
-    
+
+    public Camera camera;
+
     public Gyroscope gyro;
     private Quaternion phone_rotation;
     private float acceleration;
     public float current_angle_rotation;
     private float angle_range = 90;
 
-    Rigidbody2D car_body;
+    public Rigidbody2D car_body;
     public GameManage gm;
     public ParticleSystem ps_BOOOM;
+    public Light headLight;
     //public GameObject saveMenuUI;
 
-    
+
     private bool hasProtection;
-    private bool mayBeDestroyed;
-    private bool wasCrash;
+    public bool mayBeDestroyed;
+    public bool wasCrash;
 
     private float previous_gyro_rotation_z;
     public float current_gyro_rotation_z;
     private float inital_phone_rotation_z;
+
+    private float screenWidth;
+    
+    
+
+
+    public SpriteRenderer headlightRight;
+    public SpriteRenderer headlightLeft;
+    public SpriteRenderer headlightLeftBack;
+    public SpriteRenderer headlightRightBack;
 
    // public Transform wheel;
 
     void Awake()
     {
         //saveMenuUI.SetActive(false);
-
+        //controlType = ControlType.ButtonsControls;
+       
         hasProtection = false;
         mayBeDestroyed = true;
         wasCrash = false;
@@ -45,8 +60,9 @@ public class CarControllerGyro : MonoBehaviour {
 
         gyro = Input.gyro;
         gyro.enabled = true;
-
+        
         car_body = GetComponent<Rigidbody2D>();
+        car_body.centerOfMass -= new Vector2(0f,1.5f);
         inital_phone_rotation_z = GetGyroRotationZ();
         current_angle_rotation = 0;
         previous_gyro_rotation_z = 0;
@@ -54,13 +70,34 @@ public class CarControllerGyro : MonoBehaviour {
 
     void Start()
     {
+        screenWidth = Screen.width;
         gyro = Input.gyro;
         gyro.enabled = true;
     }
 
     void Update()
     {
-        UpdateCurrentAngle();
+        if (PlayerPrefs.GetString("Controls") == ControlType.GyroControls.ToString())
+            UpdateCurrentAngle();
+
+        if (PlayerPrefs.GetString("Controls") == ControlType.ButtonsControls.ToString())
+        {
+            int i = 0;
+            float acceleration = 1;
+            while (Input.touchCount > i && car_speed > 0)
+            {
+                if (Input.GetTouch(i).position.x > screenWidth / 2)
+                {
+                    car_body.AddTorque(-car_speed* 7f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
+                }
+                if (Input.GetTouch(i).position.x < screenWidth / 2)
+                {
+                    car_body.AddTorque(car_speed * 7f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
+                }
+                ++i;
+                acceleration += 0.1f;
+            }
+        }
 
 #if UNITY_EDITOR
         cameraRotationX += UnityEngine.Input.GetAxis("Mouse Y") * mouseSensitivityY;
@@ -73,7 +110,15 @@ public class CarControllerGyro : MonoBehaviour {
             car_body.AddForce(transform.up * car_speed, ForceMode2D.Impulse);
             car_body.AddTorque(Mathf.Clamp(current_angle_rotation, -angle_range / 2, angle_range / 2), ForceMode2D.Impulse);
         }
-        
+
+        Vector3 newPos = transform.position;
+        newPos += transform.right * current_angle_rotation / 10;
+        newPos.z = camera.transform.position.z;
+
+        Vector3 velocity = Vector3.zero;
+        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, newPos, ref velocity, 0.15f);
+        camera.transform.rotation = transform.rotation;
+
     }
 
 
@@ -82,6 +127,16 @@ public class CarControllerGyro : MonoBehaviour {
         acceleration = gyro.rotationRate.z;
         if (WasRotation())
             current_angle_rotation += acceleration * Time.deltaTime * 360 / Mathf.PI;
+    }
+
+    public void ButtonLeftWheel()
+    {
+        current_angle_rotation += 55f;
+    }
+
+    public void ButtonRightWheel()
+    {
+        current_angle_rotation -= 55f;
     }
 
     public bool WasRotation()
@@ -100,40 +155,7 @@ public class CarControllerGyro : MonoBehaviour {
     }
 
 
-
-
-    void OnCollisionStay2D(Collision2D coll)
-    {
-        OnCollisionEnter2D(coll);
-    }
-
-        void OnCollisionEnter2D(Collision2D coll)
-        {
-            if (coll.gameObject.tag == "Border" && mayBeDestroyed)
-            {
-            mayBeDestroyed = false;
-                ps_BOOOM.Play();
-                if (Vibration.HasVibrator())
-                {
-                    Vibration.Vibrate(200);
-                }
-
-            //current_angle_rotation = 0;
-            if (!wasCrash)
-            {
-                wasCrash = true;
-                gm.saveMenuUI.SetActive(true);
-                StartCoroutine(gm.Timer(3));
-                car_speed = 0;
-            } else
-            {
-                gm.UpdateTextScore();
-                this.GetComponent<SpriteRenderer>().enabled = false;
-                gm.levelMenuUI.SetActive(true);
-                car_speed = 0;
-            }
-        }
-    }
+    
 
     void OnTriggerEnter2D(Collider2D coll)
     {
@@ -156,6 +178,7 @@ public class CarControllerGyro : MonoBehaviour {
 
     public void ActivateProtection()
     {
+        headLight.enabled = true;
         mayBeDestroyed = false;
         gm.saveMenuUI.SetActive(false);
         hasProtection = true;
@@ -177,6 +200,10 @@ public class CarControllerGyro : MonoBehaviour {
             yield return new WaitForSeconds(0.1f);
         }
         sprite.enabled = true;
+        headlightRight.enabled = true;
+        headlightLeft.enabled = true;
+        headlightRightBack.enabled = true;
+        headlightLeftBack.enabled = true;
         mayBeDestroyed = true;
     }
 
