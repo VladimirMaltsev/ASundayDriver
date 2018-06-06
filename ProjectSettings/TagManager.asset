@@ -10,6 +10,7 @@ TagManager:
   - CarCollider
   - RightButton
   - LeftButton
+  - Firefly
   layers:
   - Default
   - TransparentFX

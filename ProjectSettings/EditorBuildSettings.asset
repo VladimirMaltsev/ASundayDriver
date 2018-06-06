@@ -5,12 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Light2D/Examples/Rocket.unity
-    guid: d2934fa085d9ef945991f958c310237d
   - enabled: 1
     path: Assets/Menu.unity
     guid: d87206f920811644a9f402eb498466ea
   - enabled: 1
-    path: Assets/RoadMap.unity
+    path: Assets/Scene1.unity
     guid: 75bcb7c6232a1b047b0406fa1029a2aa
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
