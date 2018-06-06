@@ -4,21 +4,13 @@ using UnityEngine;
 
 public class LightBehavior : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    //public GameManage gm;
 
     void OnTriggerEnter2D(Collider2D coll)
     {
         if (coll.tag == "Car")
         {
-            GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<SpriteRenderer>().enabled = false; 
         }
     }
 }

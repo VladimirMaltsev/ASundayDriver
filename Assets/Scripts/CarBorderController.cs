@@ -57,5 +57,9 @@ public class CarBorderController : MonoBehaviour {
             }
             ccg.car_body.AddForce(transform.up * -8000, ForceMode2D.Impulse);
         }
+
+        
     }
+    
+    
 }

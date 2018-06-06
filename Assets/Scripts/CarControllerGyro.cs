@@ -13,7 +13,7 @@ public class CarControllerGyro : MonoBehaviour {
     public bool mbLockNHideCursor = false;
     private float cameraRotationX, cameraRotationY;
 
-    public Camera camera;
+    public Camera mainCamera;
 
     public Gyroscope gyro;
     private Quaternion phone_rotation;
@@ -88,11 +88,11 @@ public class CarControllerGyro : MonoBehaviour {
             {
                 if (Input.GetTouch(i).position.x > screenWidth / 2)
                 {
-                    car_body.AddTorque(-car_speed* 7f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
+                    car_body.AddTorque(-car_speed* 6f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
                 }
                 if (Input.GetTouch(i).position.x < screenWidth / 2)
                 {
-                    car_body.AddTorque(car_speed * 7f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
+                    car_body.AddTorque(car_speed * 6f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
                 }
                 ++i;
                 acceleration += 0.1f;
@@ -113,11 +113,11 @@ public class CarControllerGyro : MonoBehaviour {
 
         Vector3 newPos = transform.position;
         newPos += transform.right * current_angle_rotation / 10;
-        newPos.z = camera.transform.position.z;
+        newPos.z = mainCamera.transform.position.z;
 
         Vector3 velocity = Vector3.zero;
-        camera.transform.position = Vector3.SmoothDamp(camera.transform.position, newPos, ref velocity, 0.15f);
-        camera.transform.rotation = transform.rotation;
+        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, newPos, ref velocity, 0.15f);
+        mainCamera.transform.rotation = transform.rotation;
 
     }
 
@@ -157,22 +157,14 @@ public class CarControllerGyro : MonoBehaviour {
 
     
 
-    void OnTriggerEnter2D(Collider2D coll)
-    {
-        if (coll.tag == "Puddle")
-        {
-            Vibration.Vibrate(200);
-            car_speed = 200f;
-            car_body.angularDrag = 30;
-        }
-    }
+    
 
-    void OnTriggerExit2D(Collider2D coll)
+    void OnTriggerStay2D(Collider2D coll)
     {
-        if (coll.tag == "Puddle")
+        if (coll.CompareTag("Puddle"))
         {
-            car_speed = 400f;
-            car_body.angularDrag = 12;
+            gm.PlusFirefly();
+            Object.Destroy(coll.gameObject);
         }
     }
 
