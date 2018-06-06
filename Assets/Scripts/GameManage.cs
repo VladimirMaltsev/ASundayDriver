@@ -9,6 +9,7 @@ using UnityEngine.Advertisements;
 public class GameManage : MonoBehaviour {
 
     private float score;
+    private int fireflies;
     public GameObject saveMenuUI;
     public GameObject levelMenuUI;
     public CarControllerGyro ccg;
@@ -18,6 +19,8 @@ public class GameManage : MonoBehaviour {
 
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI scoreBestText;
+    public TextMeshProUGUI scoreFireFlies;
+    public TextMeshProUGUI scoreFireFliesWhole;
     
 
     public AudioSource audioManager;
@@ -30,6 +33,7 @@ public class GameManage : MonoBehaviour {
         levelMenuUI.SetActive(false);
 
         score = 0;
+        fireflies = 0;
         wasDouble = false;
     }
 
@@ -41,9 +45,10 @@ public class GameManage : MonoBehaviour {
 
     public void UpdateScore()
     {
-        score += 0.1f;
+        score = Time.timeSinceLevelLoad;
     }
 
+    
 
     public void ShowAds()
     {
@@ -65,6 +70,7 @@ public class GameManage : MonoBehaviour {
         }
         if (saveMenuUI.activeSelf)
         {
+            PlayerPrefs.SetInt("Fireflies", PlayerPrefs.GetInt("Fireflies") + fireflies);
             UpdateTextScore();
             saveMenuUI.SetActive(false);
             levelMenuUI.SetActive(true);
@@ -108,7 +114,9 @@ public class GameManage : MonoBehaviour {
             PlayerPrefs.Save();
         }
         scoreBestText.text = "best score " + (Mathf.Ceil(bestScore) - 1);
-        scoreText.text = "your score " + (Mathf.Ceil(score) - 1);
+        scoreText.text = "score " + (Mathf.Ceil(score) - 1);
+
+        scoreFireFliesWhole.text = "" + PlayerPrefs.GetInt("Fireflies");
     }
 
     public void AudioButtonListener()
@@ -121,6 +129,12 @@ public class GameManage : MonoBehaviour {
             audioButton.GetComponent<Image>().sprite = audioOff;
         }
         audioManager.mute = !audioManager.mute;
+    }
+
+    public void PlusFirefly()
+    {
+        fireflies += 1;
+        scoreFireFlies.SetText("" + fireflies);
     }
 
     void OnGUI()
