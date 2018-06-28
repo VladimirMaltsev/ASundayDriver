@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
 using TMPro;
+using GoogleMobileAds.Api;
 
 public class MainMenuController : MonoBehaviour {
 
@@ -19,8 +20,20 @@ public class MainMenuController : MonoBehaviour {
     public GameObject loadingPage;
 
     private AsyncOperation async;
-    
+
+    string appId = "ca-app-pub-7280831525899952~3471913750";
+
     void Start () {
+
+        PlayerPrefs.SetInt("Games", 4);
+        if (!PlayerPrefs.HasKey("IsLock1"))
+        {
+            PlayerPrefs.SetInt("IsLock1", 1);
+            PlayerPrefs.SetInt("IsLock2", 1);
+            PlayerPrefs.SetInt("IsLock3", 1);
+        }
+
+
         if (!PlayerPrefs.HasKey("Controls"))
             PlayerPrefs.SetString("Controls", ControlType.ButtonsControls.ToString());
 
@@ -38,6 +51,7 @@ public class MainMenuController : MonoBehaviour {
         
 
         Advertisement.Initialize("2582199", false);
+        MobileAds.Initialize(appId);
 
         if (!PlayerPrefs.HasKey("CurrentLevel")){
             PlayerPrefs.SetInt("CurrentLevel", 1);

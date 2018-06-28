@@ -25,6 +25,24 @@ public class GameInit : MonoBehaviour {
     private int countFireflies;
 
 
+    //Colors
+    //#level1
+    public Color32 carColor1;
+    public Color32 mainColor1;
+    public Color32 headLightColor1;
+    public Color32 backLightColor1;
+    //#level2
+    public Color32 carColor2;
+    public Color32 mainColor2;
+    public Color32 headLightColor2;
+    public Color32 backLightColor2;
+    //#level3
+    public Color32 carColor3;
+    public Color32 mainColor3;
+    public Color32 headLightColor3;
+    public Color32 backLightColor3;
+
+
     // Use this for initialization
     void Start() {
         rand = new System.Random();
@@ -33,10 +51,10 @@ public class GameInit : MonoBehaviour {
         {
             case 0: //blue theme
                 ccg.transform.position = startPositions[0].transform.position;
-                car.color = new Color32(200, 200, 200, 255);
-                mainLight.color = new Color32(60, 120, 255, 187);
-                headLightLeft.color = new Color32(50, 120, 255, 140);
-                headLightRight.color = headLightLeft.color;
+                car.color = carColor1;
+                mainLight.color = mainColor1;
+                headLightLeft.color = headLightColor1;
+                headLightRight.color = headLightColor1;
 
                 bc = bcurves[0];
                 countFireflies = 30;
@@ -47,10 +65,10 @@ public class GameInit : MonoBehaviour {
 
             case 1: //pink theme
                 ccg.transform.position = startPositions[1].transform.position;
-                car.color = new Color32(141, 236, 169, 255);
-                mainLight.color = new Color32(255, 60, 180, 187);
-                headLightLeft.color = new Color32(230, 150, 255, 140);
-                headLightRight.color = headLightLeft.color;
+                car.color = carColor2;
+                mainLight.color = mainColor2;
+                headLightLeft.color = headLightColor2;
+                headLightRight.color = headLightColor2;
 
                 bc = bcurves[1];
                 countFireflies = 30;
@@ -63,10 +81,10 @@ public class GameInit : MonoBehaviour {
                 ccg.GetComponent<Rigidbody2D>().angularDrag = 10;
 
                 ccg.transform.position = startPositions[2].transform.position;
-                car.color = new Color32(255, 156, 156, 255);
-                mainLight.color = new Color32(120, 255, 60, 187);
-                headLightLeft.color = new Color32(20, 255, 100, 140);
-                headLightRight.color = headLightLeft.color;
+                car.color = carColor3;
+                mainLight.color = mainColor3;
+                headLightLeft.color = headLightColor3;
+                headLightRight.color = headLightColor3;
 
                 bc = bcurves[2];
                 countFireflies = 100;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 
 public class CarBorderController : MonoBehaviour {
@@ -40,7 +41,7 @@ public class CarBorderController : MonoBehaviour {
             ccg.headlightLeftBack.enabled = false;
             
             //current_angle_rotation = 0;
-            if (!ccg.wasCrash)
+            if (!ccg.wasCrash && gm.GetScore() > 10)
             {
 
                 ccg.wasCrash = true;
@@ -50,6 +51,15 @@ public class CarBorderController : MonoBehaviour {
             }
             else
             {
+                PlayerPrefs.SetInt("Games", PlayerPrefs.GetInt("Games") - 1);
+                if (PlayerPrefs.GetInt("Games") == 0)
+                {
+                    if (Advertisement.IsReady("video"))
+                    {
+                        Advertisement.Show("adBitweenGames");
+                    }
+                    PlayerPrefs.SetInt("Games", 4);
+                }
                 gm.UpdateTextScore();
                 
                 gm.levelMenuUI.SetActive(true);

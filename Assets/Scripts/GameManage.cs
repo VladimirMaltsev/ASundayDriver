@@ -52,9 +52,21 @@ public class GameManage : MonoBehaviour {
 
     public void ShowAds()
     {
-        Advertisement.Show();
+        var rewarded = false;
+        Advertisement.Show(new ShowOptions
+        {
+            resultCallback = result =>
+            {
+                if (result == ShowResult.Finished)
+                {
+                    rewarded = true;
+                }
+            }
+        });
+        
         System.Threading.Thread.Sleep(2000);
-        ccg.ActivateProtection();
+        if (rewarded)
+            ccg.ActivateProtection();
     }
 
     public IEnumerator Timer(float seconds)
@@ -96,8 +108,26 @@ public class GameManage : MonoBehaviour {
 
     public void Score_x2()
     {
-        if (!wasDouble) 
-            score = (Mathf.Ceil(score) - 1) * 2 + 0.001f;
+        if (!wasDouble)
+        {
+            if (Advertisement.IsReady("video"))
+            {
+                var reward = false;
+                Advertisement.Show("video", new ShowOptions
+                {
+                    resultCallback = result =>
+                    {
+                        if (result == ShowResult.Finished)
+                        {
+                            reward = true;
+                        }
+                    }
+                });
+                if (reward)
+                    score = (Mathf.Ceil(score) - 1) * 2 + 0.001f;
+            }
+            
+        }
         UpdateTextScore();
         wasDouble = true;
     }
@@ -135,6 +165,11 @@ public class GameManage : MonoBehaviour {
     {
         fireflies += 1;
         scoreFireFlies.SetText("" + fireflies);
+    }
+    
+    public float GetScore()
+    {
+        return score;
     }
 
     void OnGUI()
