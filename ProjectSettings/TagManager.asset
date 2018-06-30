@@ -60,3 +60,6 @@ TagManager:
   - name: Car
     uniqueID: 2756757849
     locked: 0
+  - name: Planet
+    uniqueID: 1850967111
+    locked: 0
