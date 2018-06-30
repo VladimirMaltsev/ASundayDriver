@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: BackgroundWall
   m_Shader: {fileID: 4800000, guid: 561c964cee632944a93426dee73fa4d3, type: 3}
-  m_ShaderKeywords: PIXELSNAP_ON
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA PIXELSNAP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

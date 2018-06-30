@@ -8,6 +8,7 @@ public class CarControllerGyro : MonoBehaviour {
     // Editor
     [Header("Скорость движения машины")]
     public float car_speed;
+    public float car_speed_constant;
     public float mouseSensitivityX = 3.5f;
     public float mouseSensitivityY = 3.5f;
     public bool mbLockNHideCursor = false;
@@ -25,6 +26,7 @@ public class CarControllerGyro : MonoBehaviour {
     public GameManage gm;
     public ParticleSystem ps_BOOOM;
     public Light headLight;
+    public Sprite[] cars;
     //public GameObject saveMenuUI;
 
 
@@ -38,18 +40,13 @@ public class CarControllerGyro : MonoBehaviour {
 
     private float screenWidth;
     
-    
-
-
-    public SpriteRenderer headlightRight;
-    public SpriteRenderer headlightLeft;
-    public SpriteRenderer headlightLeftBack;
-    public SpriteRenderer headlightRightBack;
+    public SpriteRenderer[] CarSprites;
 
    // public Transform wheel;
 
     void Awake()
     {
+        car_speed = car_speed_constant;
         //saveMenuUI.SetActive(false);
         //controlType = ControlType.ButtonsControls;
        
@@ -77,48 +74,62 @@ public class CarControllerGyro : MonoBehaviour {
 
     void Update()
     {
-        if (PlayerPrefs.GetString("Controls") == ControlType.GyroControls.ToString())
-            UpdateCurrentAngle();
-
-        if (PlayerPrefs.GetString("Controls") == ControlType.ButtonsControls.ToString())
-        {
-            int i = 0;
-            float acceleration = 1;
-            while (Input.touchCount > i && car_speed > 0)
-            {
-                if (Input.GetTouch(i).position.x > screenWidth / 2)
-                {
-                    car_body.AddTorque(-car_speed* 6f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
-                }
-                if (Input.GetTouch(i).position.x < screenWidth / 2)
-                {
-                    car_body.AddTorque(car_speed * 6f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
-                }
-                ++i;
-                acceleration += 0.1f;
-            }
-        }
-
-#if UNITY_EDITOR
-        cameraRotationX += UnityEngine.Input.GetAxis("Mouse Y") * mouseSensitivityY;
-        cameraRotationY += UnityEngine.Input.GetAxis("Mouse X") * mouseSensitivityX;
-        current_angle_rotation = cameraRotationY;
-#endif
-
         if (car_speed > 0)
         {
             car_body.AddForce(transform.up * car_speed, ForceMode2D.Impulse);
-            car_body.AddTorque(Mathf.Clamp(current_angle_rotation, -angle_range / 2, angle_range / 2), ForceMode2D.Impulse);
-        }
 
+
+            if (PlayerPrefs.GetString("Controls") == ControlType.GyroControls.ToString())
+            {
+                UpdateCurrentAngle();
+                car_body.AddTorque(Mathf.Clamp(current_angle_rotation, -angle_range / 2, angle_range / 2), ForceMode2D.Impulse);
+            }
+            if (PlayerPrefs.GetString("Controls") == ControlType.ButtonsControls.ToString())
+            {
+                int i = 0;
+                float acceleration = 1;
+                while (Input.touchCount > i && car_speed > 0)
+                {
+                    if (Input.GetTouch(i).position.x > screenWidth / 2)
+                    {
+                        car_body.AddTorque(-car_speed * 6f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
+                    }
+                    if (Input.GetTouch(i).position.x < screenWidth / 2)
+                    {
+                        car_body.AddTorque(car_speed * 6f * Time.deltaTime * acceleration, ForceMode2D.Impulse);
+                    }
+                    ++i;
+                    acceleration += 0.1f;
+                }
+            }
+
+#if UNITY_EDITOR
+            cameraRotationX += UnityEngine.Input.GetAxis("Mouse Y") * mouseSensitivityY;
+            cameraRotationY += UnityEngine.Input.GetAxis("Mouse X") * mouseSensitivityX;
+            current_angle_rotation = cameraRotationY;
+            car_body.AddTorque(Mathf.Clamp(current_angle_rotation, -angle_range / 2, angle_range / 2), ForceMode2D.Impulse);
+#endif
+
+
+        }
         Vector3 newPos = transform.position;
         newPos += transform.right * current_angle_rotation / 10;
         newPos.z = mainCamera.transform.position.z;
-
+        /*
         Vector3 velocity = Vector3.zero;
         mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, newPos, ref velocity, 0.15f);
-        mainCamera.transform.rotation = transform.rotation;
+        mainCamera.transform.rotation = transform.rotation;*/
 
+    }
+
+    void LateUpdate()
+    {/*
+        Vector3 newPos = transform.position;
+        newPos += transform.right * current_angle_rotation / 10;
+        newPos.z = mainCamera.transform.position.z;
+        Vector3 velocity = Vector3.zero;
+        mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, newPos, ref velocity, 0.17f);
+        mainCamera.transform.rotation = transform.rotation;*/
     }
 
 
@@ -175,7 +186,7 @@ public class CarControllerGyro : MonoBehaviour {
         gm.saveMenuUI.SetActive(false);
         hasProtection = true;
         StartCoroutine(Destroy());
-        car_speed = 400;
+        car_speed = car_speed_constant;
     }
 
     IEnumerator Destroy()
@@ -192,10 +203,11 @@ public class CarControllerGyro : MonoBehaviour {
             yield return new WaitForSeconds(0.1f);
         }
         sprite.enabled = true;
-        headlightRight.enabled = true;
-        headlightLeft.enabled = true;
-        headlightRightBack.enabled = true;
-        headlightLeftBack.enabled = true;
+
+        foreach (SpriteRenderer s in CarSprites)
+        {
+            s.enabled = true;
+        }
         mayBeDestroyed = true;
     }
 

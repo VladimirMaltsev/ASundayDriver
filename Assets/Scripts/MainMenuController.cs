@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
 using TMPro;
-using GoogleMobileAds.Api;
 
 public class MainMenuController : MonoBehaviour {
 
@@ -20,17 +19,21 @@ public class MainMenuController : MonoBehaviour {
     public GameObject loadingPage;
 
     private AsyncOperation async;
-
-    string appId = "ca-app-pub-7280831525899952~3471913750";
+    
 
     void Start () {
-
-        PlayerPrefs.SetInt("Games", 4);
-        if (!PlayerPrefs.HasKey("IsLock1"))
+        PlayerPrefs.SetInt("Audio", 1);
+        PlayerPrefs.SetInt("Games", 5);
+        if (!PlayerPrefs.HasKey("Car"))
+        {
+            PlayerPrefs.SetInt("Car", 0);
+        }
+            if (!PlayerPrefs.HasKey("IsLock1"))
         {
             PlayerPrefs.SetInt("IsLock1", 1);
             PlayerPrefs.SetInt("IsLock2", 1);
             PlayerPrefs.SetInt("IsLock3", 1);
+            PlayerPrefs.SetInt("IsLock4", 1);
         }
 
 
@@ -50,20 +53,33 @@ public class MainMenuController : MonoBehaviour {
         }
         
 
-        Advertisement.Initialize("2582199", false);
-        MobileAds.Initialize(appId);
-
         if (!PlayerPrefs.HasKey("CurrentLevel")){
             PlayerPrefs.SetInt("CurrentLevel", 1);
         }
         SetCurrentLevelText();
-        //async = SceneManager.LoadSceneAsync(PlayerPrefs.GetInt("CurrentLevel"));
-        //async.allowSceneActivation = false;
-	}
+        async = SceneManager.LoadSceneAsync(1);
+        async.allowSceneActivation = false;
+        Advertisement.Initialize("2582199", false);
+    }
 
     public void SetCurrentLevelText()
     {
-        textLevel.text = "level " + (PlayerPrefs.GetInt("CurrentLevel")+1) + " >";
+        switch (PlayerPrefs.GetInt("CurrentLevel"))
+        {
+            case 0:
+                textLevel.text = "EARTH";
+                break;
+            case 1:
+                textLevel.text = "MARS";
+                break;
+            case 2:
+                textLevel.text = "JUPITER";
+                break;
+            case 3:
+                textLevel.text = "SATURN";
+                break;
+        }
+        
     }
 
     public void GyroControlsPressed()
@@ -73,7 +89,7 @@ public class MainMenuController : MonoBehaviour {
         if (gyro.enabled)
         {
             textGyro.color = new Color32(255, 96, 204, 255);
-            textTaps.color = new Color32(0, 0, 0, 255);
+            textTaps.color = new Color32(88, 88, 88, 255);
             PlayerPrefs.SetString("Controls", ControlType.GyroControls.ToString());
         }
     }
@@ -81,16 +97,22 @@ public class MainMenuController : MonoBehaviour {
     public void TapsControlsPressed()
     {
         textTaps.color = new Color32(255, 96, 204, 255);
-        textGyro.color = new Color32(0, 0, 0, 255);
+        textGyro.color = new Color32(88, 88, 88, 255);
         PlayerPrefs.SetString("Controls", ControlType.ButtonsControls.ToString());
     }
     
     public void PlayGame()
     {
-        loadingPage.SetActive(true);
         mainMenu.SetActive(false);
+        ActivateAsync();
+        async.allowSceneActivation = false;
+    }
+
+    public void ActivateAsync()
+    {
+        loadingPage.SetActive(true);
         SceneManager.LoadScene(1);
-        //async.allowSceneActivation = false;
+        //async.allowSceneActivation = true;
     }
 
     public void ActivateLevelMenu()

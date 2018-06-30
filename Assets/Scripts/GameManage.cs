@@ -9,10 +9,11 @@ using UnityEngine.Advertisements;
 public class GameManage : MonoBehaviour {
 
     private float score;
-    private int fireflies;
+    public int fireflies;
     public GameObject saveMenuUI;
     public GameObject levelMenuUI;
     public CarControllerGyro ccg;
+    public GameInit gameInit;
 
     private float bestScore;
     private bool wasDouble;
@@ -28,6 +29,8 @@ public class GameManage : MonoBehaviour {
     public Sprite audioOn;
     public Sprite audioOff;
 
+    private AsyncOperation async;
+
     void Awake() {
         saveMenuUI.SetActive(false);
         levelMenuUI.SetActive(false);
@@ -35,6 +38,17 @@ public class GameManage : MonoBehaviour {
         score = 0;
         fireflies = 0;
         wasDouble = false;
+
+        if (PlayerPrefs.GetInt("Audio") == 0)
+        {
+            audioManager.Stop();
+            audioButton.GetComponent<Image>().sprite = audioOff;
+        }
+        else
+        {
+            audioButton.GetComponent<Image>().sprite = audioOn;
+            audioManager.Play();
+        }
     }
 
     // Update is called once per frame
@@ -48,25 +62,48 @@ public class GameManage : MonoBehaviour {
         score = Time.timeSinceLevelLoad;
     }
 
-    
+    private void HandleShowResult(ShowResult result)
+    {
+        switch (result)
+        {
+            case ShowResult.Finished:
+                Debug.Log("The ad was successfully shown.");
+                
+                ccg.ActivateProtection();
+                break;
+            case ShowResult.Skipped:
+                Debug.Log("The ad was skipped before reaching the end.");
+                break;
+            case ShowResult.Failed:
+                Debug.LogError("The ad failed to be shown.");
+                break;
+        }
+    }
+
+    private void HandleShowResultFire(ShowResult result)
+    {
+        switch (result)
+        {
+            case ShowResult.Finished:
+                Debug.Log("The ad was successfully shown.");
+
+                PlayerPrefs.SetInt("Fireflies", PlayerPrefs.GetInt("Fireflies") + 30);
+                scoreFireFliesWhole.text = "" + PlayerPrefs.GetInt("Fireflies");
+                break;
+            case ShowResult.Skipped:
+                Debug.Log("The ad was skipped before reaching the end.");
+                break;
+            case ShowResult.Failed:
+                Debug.LogError("The ad failed to be shown.");
+                break;
+        }
+    }
 
     public void ShowAds()
     {
-        var rewarded = false;
-        Advertisement.Show(new ShowOptions
-        {
-            resultCallback = result =>
-            {
-                if (result == ShowResult.Finished)
-                {
-                    rewarded = true;
-                }
-            }
-        });
-        
+        var options = new ShowOptions { resultCallback = HandleShowResult };
+        Advertisement.Show(options);
         System.Threading.Thread.Sleep(2000);
-        if (rewarded)
-            ccg.ActivateProtection();
     }
 
     public IEnumerator Timer(float seconds)
@@ -82,7 +119,7 @@ public class GameManage : MonoBehaviour {
         }
         if (saveMenuUI.activeSelf)
         {
-            PlayerPrefs.SetInt("Fireflies", PlayerPrefs.GetInt("Fireflies") + fireflies);
+            
             UpdateTextScore();
             saveMenuUI.SetActive(false);
             levelMenuUI.SetActive(true);
@@ -93,12 +130,15 @@ public class GameManage : MonoBehaviour {
     public void ReloadLevel()
     {
         Time.timeScale = 1f;
+        //gameInit.InitLevel(PlayerPrefs.GetInt("CurrentLevel"));
         SceneManager.LoadScene(1);
+        
     }
 
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(0);
+        //async.allowSceneActivation = true;
     }
 
     public void ExitApplication()
@@ -110,23 +150,10 @@ public class GameManage : MonoBehaviour {
     {
         if (!wasDouble)
         {
-            if (Advertisement.IsReady("video"))
-            {
-                var reward = false;
-                Advertisement.Show("video", new ShowOptions
-                {
-                    resultCallback = result =>
-                    {
-                        if (result == ShowResult.Finished)
-                        {
-                            reward = true;
-                        }
-                    }
-                });
-                if (reward)
-                    score = (Mathf.Ceil(score) - 1) * 2 + 0.001f;
-            }
-            
+            var options = new ShowOptions { resultCallback = HandleShowResultFire };
+            Advertisement.Show(options);
+            System.Threading.Thread.Sleep(2000);
+
         }
         UpdateTextScore();
         wasDouble = true;
@@ -143,8 +170,8 @@ public class GameManage : MonoBehaviour {
             PlayerPrefs.SetFloat("bestScore", bestScore);
             PlayerPrefs.Save();
         }
-        scoreBestText.text = "best score " + (Mathf.Ceil(bestScore) - 1);
-        scoreText.text = "score " + (Mathf.Ceil(score) - 1);
+        scoreBestText.text = "best dist " + (Mathf.Ceil(bestScore) - 1);
+        scoreText.text = "dist " + (Mathf.Ceil(score) - 1);
 
         scoreFireFliesWhole.text = "" + PlayerPrefs.GetInt("Fireflies");
     }
@@ -154,11 +181,16 @@ public class GameManage : MonoBehaviour {
         if (audioManager.mute)
         {
             audioButton.GetComponent<Image>().sprite = audioOn;
+            PlayerPrefs.SetInt("Audio", 1);
+            audioManager.Play();
         } else
         {
             audioButton.GetComponent<Image>().sprite = audioOff;
+            PlayerPrefs.SetInt("Audio", 0);
+            audioManager.Stop();
         }
         audioManager.mute = !audioManager.mute;
+            
     }
 
     public void PlusFirefly()

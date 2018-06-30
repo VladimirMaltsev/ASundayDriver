@@ -35,17 +35,18 @@ public class CarBorderController : MonoBehaviour {
                 Vibration.Vibrate(200);
             }
             ccg.GetComponent<SpriteRenderer>().enabled = false;
-            ccg.headlightRight.enabled = false;
-            ccg.headlightLeft.enabled = false;
-            ccg.headlightRightBack.enabled = false;
-            ccg.headlightLeftBack.enabled = false;
-            
+            foreach (SpriteRenderer s in ccg.CarSprites)
+            {
+                s.enabled = false;
+            }
+            PlayerPrefs.SetInt("Fireflies", PlayerPrefs.GetInt("Fireflies") + gm.fireflies);
             //current_angle_rotation = 0;
             if (!ccg.wasCrash && gm.GetScore() > 10)
             {
 
                 ccg.wasCrash = true;
                 gm.saveMenuUI.SetActive(true);
+
                 StartCoroutine(gm.Timer(3));
                 ccg.car_speed = 0;
             }

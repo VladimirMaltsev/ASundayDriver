@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using GoogleMobileAds.Api;
 
 public class LevelsMenuControls : MonoBehaviour {
 
@@ -14,37 +13,31 @@ public class LevelsMenuControls : MonoBehaviour {
     public GameObject playButtonLevel1;
     public GameObject playButtonLevel2;
     public GameObject playButtonLevel3;
+    public GameObject playButtonLevel4;
 
     public GameObject loadingPage;
     public GameObject levelMenu;
+    public MainMenuController mmc;
 
     public TextMeshProUGUI countFireflies;
 
-    private BannerView banner;
-    private string bannerId = "ca-app-pub-7280831525899952/1262335776";
+
 
     void Start()
     {
         countFireflies.SetText("" + PlayerPrefs.GetInt("Fireflies"));
         lockLevel2.SetActive (PlayerPrefs.GetInt("IsLock2") == 1 ? true : false);
         lockLevel3.SetActive (PlayerPrefs.GetInt("IsLock3") == 1 ? true : false);
+        lockLevel4.SetActive(PlayerPrefs.GetInt("IsLock4") == 1 ? true : false);
 
         playButtonLevel2.SetActive (PlayerPrefs.GetInt("IsLock2") == 1 ? false : true);
         playButtonLevel3.SetActive (PlayerPrefs.GetInt("IsLock3") == 1 ? false : true);
-        //lockLevel4.SetActive (PlayerPrefs.GetInt("IsLock1") == 1 ? true : false);
-
-        this.requestBanner();
+        playButtonLevel4.SetActive (PlayerPrefs.GetInt("IsLock4") == 1 ? false : true);
+        
+        
     }
 
-    private void requestBanner()
-    {
-        banner = new BannerView(bannerId, AdSize.Banner, AdPosition.Bottom);
-        // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
-
-        // Load the banner with the request.
-        banner.LoadAd(request);
-    }
+   
 
 	public void SetLevel1()
     {
@@ -73,7 +66,7 @@ public class LevelsMenuControls : MonoBehaviour {
     {
         if (lockLevel3.activeSelf)
         {
-            if (CheckAndDrop(30))
+            if (CheckAndDrop(20))
             {
                 lockLevel3.SetActive(false);
                 playButtonLevel3.SetActive(true);
@@ -90,15 +83,16 @@ public class LevelsMenuControls : MonoBehaviour {
     {
         if (lockLevel4.activeSelf)
         {
-            if (CheckAndDrop(500))
+            if (CheckAndDrop(30))
             {
                 lockLevel4.SetActive(false);
                 playButtonLevel3.SetActive(true);
+                PlayerPrefs.SetInt("IsLock4", 0);
             }
         }
         else
         {
-            PlayButtonLevel(4);
+            PlayButtonLevel(3);
         }
 
     }
@@ -118,9 +112,8 @@ public class LevelsMenuControls : MonoBehaviour {
     public void PlayButtonLevel(int i)
     {
         PlayerPrefs.SetInt("CurrentLevel", i);
-        loadingPage.SetActive(true);
         levelMenu.SetActive(false);
-        SceneManager.LoadScene(1);
+        mmc.ActivateAsync();
     }
 
 }

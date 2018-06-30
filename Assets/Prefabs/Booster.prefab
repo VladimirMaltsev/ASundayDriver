@@ -9,45 +9,45 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1221675324694266}
+  m_RootGameObject: {fileID: 1663077223961716}
   m_IsPrefabParent: 1
---- !u!1 &1221675324694266
+--- !u!1 &1663077223961716
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4304832298827818}
-  - component: {fileID: 212464196431072340}
-  - component: {fileID: 95050140309158684}
-  - component: {fileID: 58463157723601808}
-  m_Layer: 15
-  m_Name: FireFLY
-  m_TagString: Puddle
+  - component: {fileID: 4506437518687332}
+  - component: {fileID: 212506764171625838}
+  - component: {fileID: 68695950515798226}
+  - component: {fileID: 114945986757060050}
+  m_Layer: 0
+  m_Name: Booster
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4304832298827818
+--- !u!4 &4506437518687332
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1221675324694266}
+  m_GameObject: {fileID: 1663077223961716}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 232.16302, y: -130.04796, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 197.3, y: -706.6, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58463157723601808
-CircleCollider2D:
+--- !u!68 &68695950515798226
+EdgeCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1221675324694266}
+  m_GameObject: {fileID: 1663077223961716}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -55,31 +55,29 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1
---- !u!95 &95050140309158684
-Animator:
-  serializedVersion: 3
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5233816, y: -0.42274985}
+  - {x: -0.039372765, y: 0.46606445}
+  - {x: 0.4942271, y: -0.40816244}
+--- !u!114 &114945986757060050
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1221675324694266}
+  m_GameObject: {fileID: 1663077223961716}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1cf99ddf2af751c4ea655fe512efac64, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
---- !u!212 &212464196431072340
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 461d06a2919e72247b8d505ece319d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ccg: {fileID: 0}
+--- !u!212 &212506764171625838
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1221675324694266}
+  m_GameObject: {fileID: 1663077223961716}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -88,7 +86,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: b7851c32f10994980b33a93bfbf1b53d, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,12 +106,12 @@ SpriteRenderer:
   m_SortingLayerID: 2096943335
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7f5a2a71d6697f848aa6f1ec7553a412, type: 3}
-  m_Color: {r: 0.4852941, g: 0.744422, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 075fd8a7130c34cbeb0e2358feecfb3b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.75, y: 3.75}
+  m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
